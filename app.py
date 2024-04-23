@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import psycopg2
 from config import db_name, user, host, port, password
 from flask import Flask, request, jsonify
@@ -428,5 +427,4 @@ def car(car_id):
                         'метод': request.method})
 
 if __name__ == "__main__":
->>>>>>> 70092fa128ba2e9b5285096f43d8b54179bdb4a2
     app.run(debug=True)
