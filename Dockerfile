@@ -47,4 +47,4 @@ COPY . .
 EXPOSE 5000
 
 # Run the application.
-CMD python3 app.py --host=localhost
+CMD python3 app.py --host=0.0.0.0
