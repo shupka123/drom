@@ -1,7 +1,2 @@
-<<<<<<< HEAD
 psycopg2==2.9.9
 Flask
-=======
-psycopg2==2.9.9
-Flask
->>>>>>> 70092fa128ba2e9b5285096f43d8b54179bdb4a2
