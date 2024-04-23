@@ -14,7 +14,7 @@ try:
         user=user,
         password=password
     )
-    print("--- Успешное подключение к БД!+-")
+    print("--- Успешное подключение к БД!!!!")
     cursor = connection.cursor()
 
 except Exception as _ex:
