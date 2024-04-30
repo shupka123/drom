@@ -1,5 +1,5 @@
-db_name="drom"
+db_name="postgres"
 user="drom"
 password="drom"
 port="5432"
-host="172.18.0.2"
+host="127.0.0.1"
