@@ -16,6 +16,14 @@ try:
     )
     print("--- Успешное подключение к БД!!!!")
     cursor = connection.cursor()
+    cursor.execute("""
+        SELECT cb.name AS brand, cm.name AS model, co.name AS color, ca.car_year, ca.price, ca.car_info, 
+            ca.photo, s.name AS seller_name, s.phone AS seller_phone, s.address AS seller_address
+        FROM car_ads ca JOIN car_model cm ON ca.model_id = cm.id JOIN car_brand cb ON cm.brand_id = cb.id
+            JOIN colors co ON ca.color_id = co.color_id JOIN sellers s ON ca.seller_id = s.sellerID
+        """)
+    print(cursor.fetchall())
+    print("Vse okay!!!!!")
 
 except Exception as _ex:
     print("--- Ошибка подключения к БД: ", _ex)
