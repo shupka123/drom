@@ -44,7 +44,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY . .
 
 # Expose the port that the application listens on.
-EXPOSE 5001
+EXPOSE 5000
 
 # Run the application.
-CMD python3 app.py --host=127.0.0.1
+CMD python3 app.py 
