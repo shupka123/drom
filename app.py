@@ -23,7 +23,7 @@ try:
             JOIN colors co ON ca.color_id = co.color_id JOIN sellers s ON ca.seller_id = s.sellerID
         """)
     print(cursor.fetchall())
-    print("Vse okay!!!!!")
+    print("Vse okay++++")
 
 except Exception as _ex:
     print("--- Ошибка подключения к БД: ", _ex)
