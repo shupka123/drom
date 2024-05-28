@@ -1,6 +1,8 @@
-import psycopg2
+import requests
 from config import db_name, user, host, port, password
 from flask import Flask, request, jsonify
+import psycopg2
+import os
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -23,105 +25,27 @@ try:
             JOIN colors co ON ca.color_id = co.color_id JOIN sellers s ON ca.seller_id = s.sellerID
         """)
     print(cursor.fetchall())
-    print("Vse okay----")
+    print("Vse okay!!!!!")
 
 except Exception as _ex:
     print("--- Ошибка подключения к БД: ", _ex)
-
 @app.route('/users', methods=['POST', 'DELETE'])
 def users():
-    if request.method == "POST":
-        login = request.json.get('login')
-        name = request.json.get('name')
-        email = request.json.get('email')
-        phone = request.json.get('phone')
-        address = request.json.get('address')
-        password = request.json.get('password')
-
-        if not all([login, name, email, phone, address, password]):
-            return jsonify({'error': 'Не все обязательные поля заполнены (login, name, email, phone, address, password)'}), 400
-
-        cursor.execute("SELECT login FROM sellers WHERE login = %s", (login,))
-        if cursor.fetchone():
-            return jsonify({'error': 'Пользователь с таким login уже существует'}), 400
-
-        cursor.execute("""
-            INSERT INTO sellers (login, name, email, phone, address, password) 
-            VALUES (%s, %s, %s, %s, %s, %s)
-            RETURNING sellerID;
-        """, (login, name, email, phone, address, password))
-
-        new_seller_id = cursor.fetchone()[0]
-        connection.commit()
-
-        return jsonify({
-            'message': 'Пользователь успешно добавлен',
-            'sellerID': new_seller_id
-        }), 201
-    if request.method == 'DELETE':
-        login = request.json.get('login')
-        password = request.json.get('password')
-
-        if not login or not password:
-            return jsonify({'error': 'Необходимо указать login и password'}), 400
-
-        cursor.execute("SELECT sellerID FROM sellers WHERE login = %s AND password = %s", (login, password))
-        user = cursor.fetchone()
-
-        if user:
-            cursor.execute("DELETE FROM sellers WHERE login = %s", (login,))
-            connection.commit()
-            return jsonify({'message': 'Пользователь успешно удален'}), 200
-        else:
-            return jsonify({'error': 'Неверный login или password'}), 404
+    if request.method == 'POST':
+        response = requests.post('http://127.0.0.1:5000/users', json=request.json)
+        return jsonify(response.json()), response.status_code
+    elif request.method == 'DELETE':
+        response = requests.delete('http://127.0.0.1:5000/users', json=request.json)
+        return jsonify(response.json()), response.status_code
 
 @app.route('/car_area', methods=['GET', 'POST'])
 def cars():
-    if request.method == "GET":
-        cursor.execute("""
-        SELECT cb.name AS brand, cm.name AS model, co.name AS color, ca.car_year, ca.price, ca.car_info, 
-            ca.photo, s.name AS seller_name, s.phone AS seller_phone, s.address AS seller_address
-        FROM car_ads ca JOIN car_model cm ON ca.model_id = cm.id JOIN car_brand cb ON cm.brand_id = cb.id
-            JOIN colors co ON ca.color_id = co.color_id JOIN sellers s ON ca.seller_id = s.sellerID
-        """)
-        cars_list = cursor.fetchall()
-        return jsonify({
-            'Список авто': cars_list,
-            'метод': request.method
-        })
-    if request.method == "POST":
-        login = request.json.get('login')
-        password = request.json.get('password')
-        model_id = request.json.get('model_id')
-        color_id = request.json.get('color_id')
-        car_year = request.json.get('car_year')
-        price = request.json.get('price')
-        car_info = request.json.get('car_info')
-        photo = request.json.get('photo')
-
-        cursor.execute("""
-            SELECT sellerID FROM sellers
-            WHERE login = %s AND password = %s
-            """, (login, password))
-        seller = cursor.fetchone()
-
-        if seller is None:
-            return jsonify({'error': 'Неправильный логин или пароль'}), 400
-
-        seller_id = seller[0]
-        cursor.execute("""
-            INSERT INTO car_ads (seller_id, model_id, color_id, car_year, price, car_info, photo)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-            RETURNING id;
-            """, (seller_id, model_id, color_id, car_year, price, car_info, photo))
-        new_ad_id = cursor.fetchone()[0]
-        connection.commit()
-
-        return jsonify({
-            'message': 'Объявление успешно добавлено',
-            'id нового объявления': new_ad_id
-        }), 201
-
+    if request.method == 'GET':
+        response = requests.get('http://127.0.0.1:5001/car_area')
+        return jsonify(response.json()), response.status_code
+    elif request.method == 'POST':
+        response = requests.post('http://127.0.0.1:5001/car_area', json=request.json)
+        return jsonify(response.json()), response.status_code
 
 @app.route('/car_area/<int:car_id>', methods=['GET', 'PUT', 'DELETE'])
 def car(car_id):
@@ -220,4 +144,4 @@ def car(car_id):
                         'метод': request.method})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5002)
