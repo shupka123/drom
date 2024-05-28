@@ -44,7 +44,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 COPY . .
 
 # Expose the port that the application listens on.
-EXPOSE 5000/udp
-EXPOSE 5000/tcp
+EXPOSE 5002/udp
+EXPOSE 5002/tcp
 # Run the application.
 CMD python3 -m flask run --host=0.0.0.0
