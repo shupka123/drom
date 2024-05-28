@@ -32,19 +32,19 @@ except Exception as _ex:
 @app.route('/users', methods=['POST', 'DELETE'])
 def users():
     if request.method == 'POST':
-        response = requests.post('http://127.0.0.1:5000/users', json=request.json)
+        response = requests.post('http://172.21.0.5:5000/users', json=request.json)
         return jsonify(response.json()), response.status_code
     elif request.method == 'DELETE':
-        response = requests.delete('http://127.0.0.1:5000/users', json=request.json)
+        response = requests.delete('http://172.21.0.5:5000/users', json=request.json)
         return jsonify(response.json()), response.status_code
 
 @app.route('/car_area', methods=['GET', 'POST'])
 def cars():
     if request.method == 'GET':
-        response = requests.get('http://127.0.0.1:5001/car_area')
+        response = requests.get('http://172.21.0.4:5001/car_area')
         return jsonify(response.json()), response.status_code
     elif request.method == 'POST':
-        response = requests.post('http://127.0.0.1:5001/car_area', json=request.json)
+        response = requests.post('http://172.21.0.4:5001/car_area', json=request.json)
         return jsonify(response.json()), response.status_code
 
 @app.route('/car_area/<int:car_id>', methods=['GET', 'PUT', 'DELETE'])
