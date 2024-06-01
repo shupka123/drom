@@ -29,9 +29,12 @@ try:
 
 except Exception as _ex:
     print("--- Ошибка подключения к БД: ", _ex)
-@app.route('/users', methods=['POST', 'DELETE'])
+@app.route('/users', methods=['GET', 'POST', 'DELETE'])
 def users():
-    if request.method == 'POST':
+    if request.method == 'GET':
+        response = requests.get('http://172.21.0.5:5000/users')
+        return jsonify(response.json()), response.status_code
+    elif request.method == 'POST':
         response = requests.post('http://172.21.0.5:5000/users', json=request.json)
         return jsonify(response.json()), response.status_code
     elif request.method == 'DELETE':
